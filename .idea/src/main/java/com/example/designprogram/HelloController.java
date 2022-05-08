@@ -4,16 +4,32 @@ import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
+import javafx.scene.input.MouseButton;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
-
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
+/*
+Objetivos:
+-Salvar, importar(Check) imagens
+-Desenhar figuras(Check, triangulo em falta)
+-Desenhar fractais
+-Criar a opção de balde de tinta
+ */
 public class HelloController {
     @FXML
     private Canvas canvas;
     @FXML
     private ColorPicker colorPicker;
     @FXML
-    private CheckBox eraser;
+    private ToggleButton eraser;
+    @FXML
+    private ToggleButton pencil;
     @FXML
     private CheckBox balde;
     @FXML
@@ -21,67 +37,120 @@ public class HelloController {
     @FXML
     private Slider tamfiguras;
     @FXML
-    private ToggleButton triangulo;
+    private CheckBox triangulo;
     @FXML
-    private ToggleButton quadrado;
+    private CheckBox quadrado;
     @FXML
-    private ToggleButton circulo;
-    @FXML
-    private Label tamanho;
-    @FXML
-    public void initialize(){
-        GraphicsContext coords= canvas.getGraphicsContext2D();
-        pincel.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0,100));
-        canvas.setOnMouseDragged(e -> {
-            double size = Double.parseDouble(String.valueOf(pincel.getValue()));
-            double x = e.getX() - size/2;
-            double y = e.getY() - size/2;
+    private CheckBox circulo;
 
-            if (eraser.isSelected()){
-                coords.clearRect(x,y,size,size);
-                quadrado.setSelected(false);
-                circulo.setSelected(false);
-                balde.setSelected(false);
-            } else{
-                coords.setFill(colorPicker.getValue());
-                coords.fillRect(x,y,size,size);
-            }
-        });
-    }
+    //Método responsável pelas alterações do canvas
     @FXML
-    public void figures(){
+    public void initialize() {
+        tamfiguras.setMax(1000);
+        tamfiguras.setMin(0);
         Circle c = new Circle();
         Rectangle r = new Rectangle();
         GraphicsContext coords = canvas.getGraphicsContext2D();
+        pincel.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100));
+        canvas.setOnMouseDragged(e -> {
+            double size = Double.parseDouble(String.valueOf(pincel.getValue()));
+            double x = e.getX() - size / 2;
+            double y = e.getY() - size / 2;
+            if (e.getButton() == MouseButton.PRIMARY) {
+                if (eraser.isSelected()) {
+                    coords.clearRect(x, y, size, size);
+                    quadrado.setSelected(false);
+                    circulo.setSelected(false);
+                    triangulo.setSelected(false);
+                    balde.setSelected(false);
+                    pencil.setSelected(false);
+                } else if (pencil.isSelected()) {
+                    coords.setFill(colorPicker.getValue());
+                    coords.fillRect(x, y, size, size);
+                }
+            }
+        });
+
         canvas.setOnMouseClicked(e -> {
-            double size = Double.parseDouble(String.valueOf(tamfiguras.getValue()));
-            double x = e.getX() - size/2;
-            double y = e.getY() - size/2;
-            if(circulo.isSelected()){
-                c.setCenterX(x);
-                c.setCenterY(y);
-                c.setRadius(size/2);
-                coords.setStroke(colorPicker.getValue());
-                coords.strokeOval(x,y,size,size);
-            }
-            if (quadrado.isSelected()){
-                r.setX(x);
-                r.setY(y);
-                r.setHeight(size);
-                r.setHeight(size);
-                coords.setStroke(colorPicker.getValue());
-                coords.strokeRect(x,y,size,size);
-            }
-            if(balde.isSelected()){
-                coords.setFill(colorPicker.getValue());
-                coords.fillRect(x,y,canvas.getWidth(),canvas.getHeight());
+            if (e.getButton() == MouseButton.PRIMARY) {
+                double size = Double.parseDouble(String.valueOf(tamfiguras.getValue()));
+                double x = e.getX() - size / 2;
+                double y = e.getY() - size / 2;
+                if (circulo.isSelected()) {
+                    c.setCenterX(x + size / 2);
+                    c.setCenterY(y + size / 2);
+                    c.setRadius(size / 2);
+                    coords.setStroke(colorPicker.getValue());
+                    coords.strokeOval(x, y, size, size);
+                }
+                if (quadrado.isSelected()) {
+                    r.setX(x);
+                    r.setY(y);
+                    r.setHeight(size);
+                    r.setHeight(size);
+                    coords.setStroke(colorPicker.getValue());
+                    coords.strokeRect(x, y, size, size);
+                }
+                if (triangulo.isSelected()) {
+                    //trisngulo retangulo
+                    double[] xPoints = {x, x + size, x};
+                    double[] yPoints = {y, y + size, y + size};
+                    coords.setStroke(colorPicker.getValue());
+                    coords.strokePolygon(xPoints, yPoints, 3);
+                }
+                if (balde.isSelected()) {
+                    coords.setFill(colorPicker.getValue());
+                }
             }
         });
     }
+
+    //Método responsável por salvar o canvas
     @FXML
-    public void tamanho(){
-        tamfiguras.setMax(1000);
-        tamfiguras.setMin(0);
-        tamanho.setText(String.valueOf(tamfiguras.getValue()));
+    public void save() {
+        Stage stage = new Stage();
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Image");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("PNG", "*.png"),
+                new FileChooser.ExtensionFilter("JPG", "*.jpg")
+        );
+        File file = fileChooser.showSaveDialog(stage);
+        if (file != null) {
+            WritableImage writableImage = canvas.snapshot(null, null);
+            /*try {
+                ImageIO.write(SwingFXUtils.fromFXImage(writableImage, null), "png", file);
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }*/
+        }
+    }
+
+    //Método responsável por importar uma imagem para o canvas
+    @FXML
+    public void open() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("PNG", "*.png"),
+                new FileChooser.ExtensionFilter("JPG", "*.jpg")
+        );
+        File file = fileChooser.showOpenDialog(null);
+        if (file != null) {
+            Image image = new Image(file.toURI().toString());
+            canvas.getGraphicsContext2D().drawImage(image, 0, 0);
+        }
+    }
+
+    //Método responsável por fechar a aplicação
+    @FXML
+    public void close() {
+        System.exit(0);
+    }
+
+    //Método responsável por limpar o canvas
+    @FXML
+    public void clear() {
+        canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 }
