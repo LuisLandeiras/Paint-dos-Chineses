@@ -1,4 +1,4 @@
-package com.example.designprogram;
+package com.example.paint;
 
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
@@ -14,11 +14,12 @@ import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
+
 /*
 Objetivos:
--Salvar, importar(Check) imagens
--Desenhar figuras(Check, triangulo em falta)
+-Salvar imagem
 -Desenhar fractais
+-Permitir zoom
 -Criar a opção de balde de tinta
  */
 public class HelloController {
@@ -27,31 +28,24 @@ public class HelloController {
     @FXML
     private ColorPicker colorPicker;
     @FXML
-    private ToggleButton eraser;
-    @FXML
-    private ToggleButton pencil;
-    @FXML
-    private CheckBox balde;
+    private ToggleButton eraser, pencil;
     @FXML
     private Spinner pincel;
     @FXML
-    private Slider tamfiguras;
+    private Slider tamfiguras, grofiguras;
     @FXML
-    private CheckBox triangulo;
+    private CheckBox triangulo, quadrado, circulo, balde;
     @FXML
-    private CheckBox quadrado;
+    private Label label, label2;
     @FXML
-    private CheckBox circulo;
+    private TextField zoom;
 
     //Método responsável pelas alterações do canvas
     @FXML
     public void initialize() {
-        tamfiguras.setMax(1000);
-        tamfiguras.setMin(0);
         Circle c = new Circle();
         Rectangle r = new Rectangle();
         GraphicsContext coords = canvas.getGraphicsContext2D();
-        pincel.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100));
         canvas.setOnMouseDragged(e -> {
             double size = Double.parseDouble(String.valueOf(pincel.getValue()));
             double x = e.getX() - size / 2;
@@ -74,6 +68,7 @@ public class HelloController {
         canvas.setOnMouseClicked(e -> {
             if (e.getButton() == MouseButton.PRIMARY) {
                 double size = Double.parseDouble(String.valueOf(tamfiguras.getValue()));
+                double grossura = Double.parseDouble(String.valueOf(grofiguras.getValue()));
                 double x = e.getX() - size / 2;
                 double y = e.getY() - size / 2;
                 if (circulo.isSelected()) {
@@ -82,6 +77,7 @@ public class HelloController {
                     c.setRadius(size / 2);
                     coords.setStroke(colorPicker.getValue());
                     coords.strokeOval(x, y, size, size);
+                    coords.setLineWidth(grossura);
                 }
                 if (quadrado.isSelected()) {
                     r.setX(x);
@@ -90,19 +86,46 @@ public class HelloController {
                     r.setHeight(size);
                     coords.setStroke(colorPicker.getValue());
                     coords.strokeRect(x, y, size, size);
+                    coords.setLineWidth(grossura);
                 }
                 if (triangulo.isSelected()) {
-                    //trisngulo retangulo
-                    double[] xPoints = {x, x + size, x};
+                    //triangulo retangulo
+                    double[] xPoints = {x, x + size, x - size};
                     double[] yPoints = {y, y + size, y + size};
                     coords.setStroke(colorPicker.getValue());
                     coords.strokePolygon(xPoints, yPoints, 3);
+                    coords.setLineWidth(grossura);
                 }
                 if (balde.isSelected()) {
                     coords.setFill(colorPicker.getValue());
+                    coords.fillRect(x, y, coords.getCanvas().getHeight(), coords.getCanvas().getWidth());
                 }
             }
         });
+    }
+
+    //Método responsavel por mostrar o tamanho das figuras
+    @FXML
+    public void tamanhofig() {
+        tamfiguras.setMax(1000);
+        tamfiguras.setMin(0);
+        double size = Double.parseDouble(String.valueOf(tamfiguras.getValue()));
+        int resultado = (int) size;
+        label.setText(String.valueOf(resultado));
+    }
+
+    //Método responsavel por mostrar a grossura das figuras
+    @FXML
+    public void grossurafig(){
+        grofiguras.setMax(100);
+        grofiguras.setMin(0);
+        double size = Double.parseDouble(String.valueOf(grofiguras.getValue()));
+        int resultado2 = (int) size;
+        label2.setText(String.valueOf(resultado2));
+    }
+    @FXML
+    public void tamanho(){
+        pincel.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100));
     }
 
     //Método responsável por salvar o canvas
@@ -118,12 +141,12 @@ public class HelloController {
         File file = fileChooser.showSaveDialog(stage);
         if (file != null) {
             WritableImage writableImage = canvas.snapshot(null, null);
-            /*try {
+            try {
                 ImageIO.write(SwingFXUtils.fromFXImage(writableImage, null), "png", file);
             }
             catch (IOException e) {
                 e.printStackTrace();
-            }*/
+            }
         }
     }
 
@@ -142,15 +165,21 @@ public class HelloController {
         }
     }
 
-    //Método responsável por fechar a aplicação
-    @FXML
-    public void close() {
-        System.exit(0);
-    }
-
     //Método responsável por limpar o canvas
     @FXML
     public void clear() {
         canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+    }
+
+    //Método responsável por dar zoom no canvas
+    @FXML
+    public void zoom(){
+        if (Integer.parseInt(zoom.getText()) <= 5 ){
+            int i = Integer.parseInt(zoom.getText());
+            canvas.setScaleX(i);
+            canvas.setScaleY(i);
+        }else{
+            zoom.setText("5");
+        }
     }
 }
