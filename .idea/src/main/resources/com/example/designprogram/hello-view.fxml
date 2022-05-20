@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ColorPicker?>
 <?import javafx.scene.control.Label?>
@@ -11,7 +12,6 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.Spinner?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.paint.HelloController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.designprogram.HelloController">
     <children>
         <BorderPane layoutX="-1.0">
 
@@ -46,11 +46,9 @@
                             <items>
                                 <Spinner fx:id="pincel" onMouseEntered="#tamanho" prefHeight="26.0" prefWidth="78.0" />
                                 <ColorPicker fx:id="colorPicker" onAction="#initialize" prefHeight="26.0" prefWidth="100.0" />
-                                <ToggleButton fx:id="eraser" mnemonicParsing="false" onAction="#initialize" prefHeight="26.0" prefWidth="65.0" text="Borracha" />
                                 <ToggleButton fx:id="pencil" mnemonicParsing="false" onAction="#initialize" text="Pincel" />
-                                <CheckBox fx:id="balde" mnemonicParsing="false" text="Balde" />
-                                <Label text="Zoom:" />
-                                <TextField fx:id="zoom" onAction="#zoom" prefHeight="25.0" prefWidth="50.0" />
+                                <ToggleButton fx:id="eraser" mnemonicParsing="false" onAction="#initialize" prefHeight="26.0" prefWidth="65.0" text="Borracha" />
+                                <CheckBox fx:id="bucket" mnemonicParsing="false" text="Balde" />
                             </items>
                             <VBox.margin>
                                 <Insets />
@@ -60,7 +58,7 @@
                 </VBox>
             </top>
             <center>
-                <Canvas fx:id="canvas" height="331.0" width="601.0" BorderPane.alignment="CENTER" />
+                <Canvas fx:id="canvas" height="331.0" onScroll="#zoom" width="601.0" BorderPane.alignment="CENTER" />
             </center>
             <bottom>
                 <HBox alignment="CENTER_LEFT" prefHeight="41.0" prefWidth="601.0" style="-fx-background-color: #c549f2;" BorderPane.alignment="TOP_CENTER">
@@ -107,7 +105,7 @@
                                 </Slider>
                             </children>
                         </VBox>
-                        <VBox prefHeight="200.0" prefWidth="100.0">
+                        <VBox prefHeight="41.0" prefWidth="70.0">
                             <children>
                                 <Label fx:id="label2" text="______">
                                     <VBox.margin>
@@ -117,6 +115,7 @@
                                 <Label fx:id="label" text="______" />
                             </children>
                         </VBox>
+                  <Button mnemonicParsing="false" onAction="#mandelbrot" text="Mandelbrot" />
                     </children>
                 </HBox>
             </bottom>
