@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.designprogram.HelloController">
+<AnchorPane fx:id="panes" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseMoved="#resolution" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.designprogram.HelloController">
     <children>
         <BorderPane layoutX="-1.0">
 
@@ -30,7 +30,7 @@
                             <menus>
                                 <Menu mnemonicParsing="false" text="File">
                                     <items>
-                                        <MenuItem mnemonicParsing="false" onAction="#open" text="Import" />
+                                        <MenuItem mnemonicParsing="false" onAction="#ImportImage" text="Import" />
                                         <MenuItem mnemonicParsing="false" onAction="#save" text="Save" />
                                         <MenuItem mnemonicParsing="false" onAction="#clear" text="Clear" />
                                     </items>

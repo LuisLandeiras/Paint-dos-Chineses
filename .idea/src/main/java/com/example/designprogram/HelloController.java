@@ -7,16 +7,21 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.Window;
+
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /*
 Objetivos:
@@ -27,6 +32,8 @@ Objetivos:
 public class HelloController {
     @FXML
     private Canvas canvas;
+    @FXML
+    private AnchorPane Pane;
     @FXML
     private ColorPicker colorPicker;
     @FXML
@@ -39,6 +46,10 @@ public class HelloController {
     private CheckBox triangulo, quadrado, circulo, bucket;
     @FXML
     private Label label, label2;
+    @FXML
+    private ImageView image = new ImageView();
+    @FXML
+    private AnchorPane panes;
 
     //Método responsável pelas alterações do canvas
     @FXML
@@ -63,6 +74,23 @@ public class HelloController {
                     coords.fillRect(x, y, size, size);
                 }
             }
+        });
+
+        ArrayList <Cordenadas> ImageMove = new ArrayList<>(); //Array das coordenadas dos pontos para mover a Imagem
+
+        //Método responsável pelo movimento da imagem
+        image.setOnMouseDragged(event -> {
+            double size = tamfiguras.getValue();
+            double x = event.getX() - size / 2;
+            double y = event.getY() - size / 2;
+            ImageMove.add(new Cordenadas(x, y));
+            image.setTranslateX(image.getTranslateX() - (ImageMove.get(0).getX() - ImageMove.get(ImageMove.size() - 1).getX())/2);
+            image.setTranslateY(image.getTranslateY() - (ImageMove.get(0).getY() - ImageMove.get(ImageMove.size() - 1).getY())/2);
+        });
+
+        //Responsável por limpar o arrray de movimento da imagem
+        image.setOnMouseMoved(event -> {
+            ImageMove.clear();  //Create by Traço Sublime
         });
 
         canvas.setOnMouseClicked(e -> {
@@ -127,6 +155,30 @@ public class HelloController {
         pincel.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100));
     }
 
+
+    //Devolve o caminho do ficheiro
+    private String FilePath(){
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Background Image");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("PNG", "*.png"),
+                new FileChooser.ExtensionFilter("JPEG", "*.jpg"),
+                new FileChooser.ExtensionFilter("JPG", "*.jpg")
+        );
+        File file = fileChooser.showOpenDialog(Pane.getScene().getWindow());
+        return file.getAbsolutePath();
+    }
+
+    //Importa a imagem
+    @FXML
+    private void ImportImage(){
+        image = new ImageView(FilePath());
+        image.setLayoutY(canvas.getLayoutY());
+        image.setLayoutX(canvas.getLayoutX());
+        Pane.getChildren().add(image);
+        initialize();
+    }
+
     //Método responsável por salvar o canvas
     @FXML
     public void save() {
@@ -152,26 +204,23 @@ public class HelloController {
         }
     }
 
-    //Método responsável por importar uma imagem para o canvas
-    @FXML
-    public void open() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("PNG", "*.png"),
-                new FileChooser.ExtensionFilter("JPG", "*.jpg"),
-                new FileChooser.ExtensionFilter("JPEG", "*.jpeg")
-        );
-        File file = fileChooser.showOpenDialog(null);
-        if (file != null) {
-            Image image = new Image(file.toURI().toString());
-            canvas.getGraphicsContext2D().drawImage(image, 0, 0);
-        }
-    }
+
 
     //Método responsável por limpar o canvas
     @FXML
     public void clear() {
         canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+    }
+
+    @FXML
+    private void resolution (){
+        panes.setOnMouseMoved(e -> {
+           if(canvas.getHeight() <= Window.getWindows().get(0).getHeight()-145 && canvas.getWidth() <= Window.getWindows().get(0).getWidth()){
+               canvas.setHeight(Window.getWindows().get(0).getHeight()-145);
+               canvas.setWidth(Window.getWindows().get(0).getWidth());
+               canvas.setLayoutY(50);
+           }
+        });
     }
 
     //Método responsável por dar zoom no canvas(Beta test)
