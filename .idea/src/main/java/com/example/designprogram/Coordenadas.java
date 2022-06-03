@@ -1,15 +1,15 @@
 package com.example.designprogram;
 
-public class Cordenadas {
+public class Coordenadas {
     private double x;
     private double y;
 
-    public Cordenadas(double x, double y) {
+    public Coordenadas(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
-    public Cordenadas() {
+    public Coordenadas() {
         this.x = 0;
         this.y = 0;
     }

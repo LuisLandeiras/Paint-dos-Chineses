@@ -18,9 +18,9 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="panes" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseMoved="#resolution" prefHeight="500.0" prefWidth="748.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.designprogram.HelloController">
+<AnchorPane fx:id="panes" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseMoved="#resolution" prefHeight="500.0" prefWidth="839.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.designprogram.HelloController">
     <children>
-        <BorderPane layoutX="-1.0" prefHeight="506.0" prefWidth="750.0">
+        <BorderPane layoutX="-1.0" prefHeight="506.0" prefWidth="840.0">
 
             <top>
                 <VBox prefHeight="91.0" prefWidth="773.0" style="-fx-view-order: 1;" BorderPane.alignment="CENTER">
@@ -38,34 +38,43 @@
                         </MenuBar>
                         <ToolBar prefHeight="62.0" prefWidth="750.0" style="-fx-view-order: 0;" stylesheets="@style.css">
                             <items>
-                                <Spinner fx:id="pincel" onMouseEntered="#tamanho" prefHeight="26.0" prefWidth="78.0" />
+                                <Spinner fx:id="pincel" prefHeight="26.0" prefWidth="78.0" />
                                 <ColorPicker fx:id="colorPicker" onAction="#initialize" prefHeight="26.0" prefWidth="100.0" />
+                        <MenuButton mnemonicParsing="false" text="Pinceis">
+                          <items>
+                            <MenuItem mnemonicParsing="false" text="Pincel Quadrado">
+                                 <graphic>
+                                    <CheckBox fx:id="pincel1" mnemonicParsing="false" onAction="#pincel1true" />
+                                 </graphic>
+                              </MenuItem>
+                            <MenuItem mnemonicParsing="false" text="Pincel Circular">
+                                 <graphic>
+                                    <CheckBox fx:id="pincel2" mnemonicParsing="false" onAction="#pincel2true" />
+                                 </graphic>
+                              </MenuItem>
+                          </items>
+                        </MenuButton>
                                 <ToggleButton fx:id="eraser" mnemonicParsing="false" onAction="#initialize" prefHeight="26.0" prefWidth="65.0" text="Borracha" />
                                 <MenuButton mnemonicParsing="false" text="Figuras">
                                     <items>
                                         <MenuItem mnemonicParsing="false" text="Triângulo">
                                             <graphic>
-                                                <CheckBox fx:id="triangulo" mnemonicParsing="false" />
+                                                <CheckBox fx:id="triangulo" mnemonicParsing="false" onAction="#ttrue" />
                                             </graphic>
                                         </MenuItem>
                                         <MenuItem mnemonicParsing="false" text="Circulo">
                                             <graphic>
-                                                <CheckBox fx:id="circulo" mnemonicParsing="false" />
+                                                <CheckBox fx:id="circulo" mnemonicParsing="false" onAction="#ctrue" />
                                             </graphic>
                                         </MenuItem>
                                         <MenuItem mnemonicParsing="false" text="Quadrado">
                                             <graphic>
-                                                <CheckBox fx:id="quadrado" mnemonicParsing="false" />
+                                                <CheckBox fx:id="quadrado" mnemonicParsing="false" onAction="#qtrue" />
                                             </graphic>
                                         </MenuItem>
                               <MenuItem mnemonicParsing="false" text="Linha">
                                  <graphic>
-                                    <CheckBox fx:id="line" mnemonicParsing="false" />
-                                 </graphic>
-                              </MenuItem>
-                              <MenuItem mnemonicParsing="false" text="Polígonos">
-                                 <graphic>
-                                    <CheckBox fx:id="poligono" mnemonicParsing="false" />
+                                    <CheckBox fx:id="line" mnemonicParsing="false" onAction="#ltrue" />
                                  </graphic>
                               </MenuItem>
                                     </items>
