@@ -14,6 +14,8 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
@@ -23,7 +25,7 @@
         <BorderPane layoutX="-1.0" prefHeight="506.0" prefWidth="840.0">
 
             <top>
-                <VBox prefHeight="91.0" prefWidth="773.0" style="-fx-view-order: 1;" BorderPane.alignment="CENTER">
+                <VBox prefHeight="91.0" prefWidth="783.0" style="-fx-view-order: 1;" BorderPane.alignment="CENTER">
                     <children>
                         <MenuBar style="-fx-view-order: 0;" stylesheets="@style.css">
                             <menus>
@@ -40,22 +42,36 @@
                             <items>
                                 <Spinner fx:id="pincel" prefHeight="26.0" prefWidth="78.0" />
                                 <ColorPicker fx:id="colorPicker" onAction="#initialize" prefHeight="26.0" prefWidth="100.0" />
-                        <MenuButton mnemonicParsing="false" text="Pinceis">
-                          <items>
-                            <MenuItem mnemonicParsing="false" text="Pincel Quadrado">
-                                 <graphic>
-                                    <CheckBox fx:id="pincel1" mnemonicParsing="false" onAction="#pincel1true" />
-                                 </graphic>
-                              </MenuItem>
-                            <MenuItem mnemonicParsing="false" text="Pincel Circular">
-                                 <graphic>
-                                    <CheckBox fx:id="pincel2" mnemonicParsing="false" onAction="#pincel2true" />
-                                 </graphic>
-                              </MenuItem>
-                          </items>
-                        </MenuButton>
-                                <ToggleButton fx:id="eraser" mnemonicParsing="false" onAction="#initialize" prefHeight="26.0" prefWidth="65.0" text="Borracha" />
-                                <MenuButton mnemonicParsing="false" text="Figuras">
+                                <MenuButton mnemonicParsing="false">
+                                    <items>
+                                        <MenuItem mnemonicParsing="false" text="Pincel Quadrado">
+                                            <graphic>
+                                                <CheckBox fx:id="pincel1" mnemonicParsing="false" onAction="#pincel1true" />
+                                            </graphic>
+                                        </MenuItem>
+                                        <MenuItem mnemonicParsing="false" text="Pincel Circular">
+                                            <graphic>
+                                                <CheckBox fx:id="pincel2" mnemonicParsing="false" onAction="#pincel2true" />
+                                            </graphic>
+                                        </MenuItem>
+                                    </items>
+                                    <graphic>
+                                        <ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@brush-stroke.png" />
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </MenuButton>
+                                <ToggleButton fx:id="eraser" mnemonicParsing="false" onAction="#initialize" prefHeight="26.0" prefWidth="65.0">
+                                    <graphic>
+                                        <ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@eraser.png" />
+                                            </image>
+                                        </ImageView>
+                                    </graphic></ToggleButton>
+                                <MenuButton mnemonicParsing="false">
                                     <items>
                                         <MenuItem mnemonicParsing="false" text="Triângulo">
                                             <graphic>
@@ -72,12 +88,19 @@
                                                 <CheckBox fx:id="quadrado" mnemonicParsing="false" onAction="#qtrue" />
                                             </graphic>
                                         </MenuItem>
-                              <MenuItem mnemonicParsing="false" text="Linha">
-                                 <graphic>
-                                    <CheckBox fx:id="line" mnemonicParsing="false" onAction="#ltrue" />
-                                 </graphic>
-                              </MenuItem>
+                                        <MenuItem mnemonicParsing="false" text="Linha">
+                                            <graphic>
+                                                <CheckBox fx:id="line" mnemonicParsing="false" onAction="#ltrue" />
+                                            </graphic>
+                                        </MenuItem>
                                     </items>
+                                    <graphic>
+                                        <ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@shapes.png" />
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
                                 </MenuButton>
                                 <VBox prefHeight="40.0" prefWidth="56.0">
                                     <children>
@@ -133,9 +156,9 @@
                 </VBox>
             </top>
             <center>
-                <AnchorPane fx:id="pane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                <AnchorPane fx:id="pane" prefHeight="399.0" prefWidth="840.0" BorderPane.alignment="CENTER">
                     <children>
-                        <Canvas fx:id="canvas" height="409.0" layoutX="1.0" layoutY="3.0" onScroll="#zoom" style="-fx-view-order: 0;" width="748.0" />
+                        <Canvas fx:id="canvas" height="414.0" layoutX="1.0" layoutY="-2.0" onScroll="#zoom" style="-fx-view-order: 0;" width="839.0" />
                     </children>
                 </AnchorPane>
             </center>
