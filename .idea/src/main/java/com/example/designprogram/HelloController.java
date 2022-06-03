@@ -10,8 +10,6 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -31,7 +29,7 @@ public class HelloController {
     @FXML
     private Slider tamfiguras, grofiguras;
     @FXML
-    private CheckBox triangulo, quadrado, circulo, mandelbrot;
+    private CheckBox triangulo, quadrado, circulo, line, mandelbrot;
     @FXML
     private TextField text1, text;
     @FXML
@@ -39,17 +37,17 @@ public class HelloController {
     @FXML
     private AnchorPane panes, pane;
     private double reMin = -2, reMax = 1 , imMin = -1.2, imMax = 1.2;
-
     ArrayList<Cordenadas> MoveFractal = new ArrayList<>();
     ArrayList <Cordenadas> ImageMove = new ArrayList<>(); //Array das coordenadas dos pontos para mover a Imagem
-
-    private double distpontos (Cordenadas a, Cordenadas b){
-        double x = Math.pow((a.getX() - b.getX()), 2);
-        double y = Math.pow((a.getY() - b.getY()), 2);
-        return Math.sqrt(x + y);
+    int click = 0;
+    private Cordenadas distanciapontos(Cordenadas a, Cordenadas b){
+        Cordenadas c = new Cordenadas();
+        c.setX(modulo(a.getX() - b.getX()));
+        c.setY(modulo(a.getY() - b.getY()));
+        return c;
     }
 
-    /*private double modulo (double x){
+    private double modulo(double x){
         if (x > 0){
             return x;
         } else {
@@ -57,19 +55,19 @@ public class HelloController {
         }
     }
 
-    private int modulo2(double x, double y) {
-        if(x - y > 0){
-            return (int) (x - y);
-        }   else {
-            return (int) (y - x);
+    private double menor(double a, double b){
+        if (a < b){
+            return a;
+        } else {
+            return b;
         }
-    }*/
+    }
 
     //Método responsável pelas alterações do canvas
     @FXML
     public void initialize() {
-        Circle c = new Circle();
-        Rectangle r = new Rectangle();
+        Cordenadas c1 = new Cordenadas();
+        Cordenadas c2 = new Cordenadas();
         GraphicsContext coords = canvas.getGraphicsContext2D();
         canvas.setOnMouseDragged(e -> {
             //Usado para mover o fractal
@@ -92,7 +90,7 @@ public class HelloController {
                     quadrado.setSelected(false);
                     circulo.setSelected(false);
                     triangulo.setSelected(false);
-                } else if(triangulo.isSelected() == false & quadrado.isSelected() == false & circulo.isSelected() == false){
+                } else if (!triangulo.isSelected() & !quadrado.isSelected() & !circulo.isSelected()) {
                     coords.setFill(colorPicker.getValue());
                     coords.fillRect(x, y, size, size);
                 }
@@ -113,7 +111,7 @@ public class HelloController {
             image.setTranslateY(image.getTranslateY() - (ImageMove.get(0).getY() - ImageMove.get(ImageMove.size() - 1).getY()) / 2);
         });
 
-        //Responsável por limpar o arrray de movimento da imagem
+        //Responsável por limpar o array de movimento da imagem
         image.setOnMouseMoved(event -> {
             ImageMove.clear();
         });
@@ -126,17 +124,10 @@ public class HelloController {
                 double y = e.getY() - size / 2;
                 coords.setLineWidth(grossura);
                 if (circulo.isSelected()) {
-                    c.setCenterX(x + size / 2);
-                    c.setCenterY(y + size / 2);
-                    c.setRadius(size / 2);
                     coords.setStroke(colorPicker.getValue());
                     coords.strokeOval(x, y, size, size);
                 }
                 if (quadrado.isSelected()) {
-                    r.setX(x);
-                    r.setY(y);
-                    r.setHeight(size);
-                    r.setHeight(size);
                     coords.setStroke(colorPicker.getValue());
                     coords.strokeRect(x, y, size, size);
                 }
@@ -147,10 +138,68 @@ public class HelloController {
                     coords.setStroke(colorPicker.getValue());
                     coords.strokePolygon(xPoints, yPoints, 3);
                 }
+            }else if (e.getButton() == MouseButton.SECONDARY) {
+                double grossura = Double.parseDouble(String.valueOf(grofiguras.getValue()));
+                coords.setLineWidth(grossura);
+                if (circulo.isSelected()){
+                    click++;
+                    if (click == 1) {
+                        c1.setX(e.getX());
+                        c1.setY(e.getY());
+                    } else if(click == 2){
+                        double x1 = e.getX();
+                        double y1 = e.getY();
+                        coords.setStroke(colorPicker.getValue());
+                        coords.strokeOval(menor(c1.getX(), x1), menor(c1.getY(), y1), distanciapontos(c1, new Cordenadas(x1, y1)).getX(), distanciapontos(c1, new Cordenadas(x1, y1)).getY());
+                        click = 0;
+                    }
+                }
+                if (triangulo.isSelected()){
+                    click++;
+                    if (click == 1) {
+                        c1.setX(e.getX());
+                        c1.setY(e.getY());
+                    } else if(click == 2){
+                        c2.setX(e.getX());
+                        c2.setY(e.getY());
+                    } else{
+                        double x = e.getX();
+                        double y = e.getY();
+                        coords .setStroke(colorPicker.getValue());
+                        coords.strokePolygon(new double[]{c1.getX(), c2.getX(), x}, new double[]{c1.getY(), c2.getY(), y}, 3);
+                        click = 0;
+                    }
+                }
+                if (quadrado.isSelected()){
+                    click++;
+                    if (click == 1) {
+                        c1.setX(e.getX());
+                        c1.setY(e.getY());
+                    } else {
+                        double x1 = e.getX();
+                        double y1 = e.getY();
+                        coords.setStroke(colorPicker.getValue());
+                        coords.strokeRect( menor(c1.getX(), x1), menor(c1.getY(), y1), distanciapontos(c1, new Cordenadas(x1, y1)).getX(), distanciapontos(c1, new Cordenadas(x1, y1)).getY());
+                        click = 0;
+                    }
+                }
+                if(line.isSelected()){
+                    click++;
+                    if (click == 1) {
+                        c1.setX(e.getX());
+                        c1.setY(e.getY());
+                    } else {
+                        double x1 = e.getX();
+                        double y1 = e.getY();
+                        coords.setStroke(colorPicker.getValue());
+                        coords.strokeLine(c1.getX(), c1.getY(), x1, y1);
+                        click = 0;
+                    }
+                }
             }
         });
     }
-    //Método responsavel por mostrar o tamanho das figuras
+    //Métodos responsáveis por aumentar o tamanho das figuras e do pincel/borracha
     @FXML
     public void tamanhofig() {
         tamfiguras.setMax(1000);
@@ -167,7 +216,6 @@ public class HelloController {
         tamfiguras.setValue(Integer.parseInt(String.valueOf(text.getText())));
     }
 
-    //Método responsavel por mostrar a grossura das figuras
     @FXML
     public void grossurafig(){
         grofiguras.setMax(100);
@@ -185,10 +233,11 @@ public class HelloController {
     public void tamanho(){
         pincel.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100));
     }
+    //---------------------------------------------------------------------------------------------------------------------
 
-
-    //Devolve o caminho do ficheiro
-    private String FilePath(){
+    //Métodos responáveis por importar e salvar o canvas como imagem
+    @FXML
+    private void ImportImage(){
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Abrir Ficheiro");
         fileChooser.getExtensionFilters().addAll(
@@ -197,20 +246,13 @@ public class HelloController {
                 new FileChooser.ExtensionFilter("JPG", "*.jpg")
         );
         File file = fileChooser.showOpenDialog(pane.getScene().getWindow());
-        return file.getAbsolutePath();
-    }
-
-    //Importa a imagem
-    @FXML
-    private void ImportImage(){
-        image = new ImageView(FilePath());
+        image = new ImageView(file.getAbsolutePath());
         image.setLayoutY(canvas.getLayoutY());
         image.setLayoutX(canvas.getLayoutX());
         pane.getChildren().add(image);
         initialize();
     }
 
-    //Método responsável por salvar o canvas
     @FXML
     public void save() {
         Stage stage = new Stage();
@@ -234,7 +276,7 @@ public class HelloController {
             }
         }
     }
-
+    //---------------------------------------------------------------------------------------------------------------------
     //Método responsável por limpar o canvas
     @FXML
     public void clear() {
@@ -291,19 +333,21 @@ public class HelloController {
         for (double c = reMin, xR = 0; xR < canvas.getWidth(); c = c + precision, xR++) {
             for (double ci = imMin, yR = 0; yR < canvas.getHeight(); ci = ci + precision, yR++) {
                 double convergenceValue = checkConvergence(ci, c, convergenceSteps);
-                double t1 = (double) convergenceValue / convergenceSteps;
+                double t1 = convergenceValue / convergenceSteps;
                 double c1 = Math.min(255 * 2 * t1, 255);
                 double c2 = Math.max(255 * (2 * t1 - 1), 0);
 
                 if (convergenceValue != convergenceSteps){
-                    canvas.getGraphicsContext2D().setFill(Color.color(c2 / 3000, c1 / 3000, c2 / 3000));
+                    canvas.getGraphicsContext2D().setFill(Color.color(c2 / 255, c1 / 255, c2 / 1500));
                 } else{
-                    canvas.getGraphicsContext2D().setFill(Color.YELLOW); // Convergence Color
+                    canvas.getGraphicsContext2D().setFill(Color.BLACK); // Convergence Color
                 }
                 canvas.getGraphicsContext2D().fillRect(xR, yR, 1, 1);
             }
         }
     }
+
+    //Método responsável por calcular a formula de mandelbrot
     private int checkConvergence(double ci, double c, int convergenceSteps) {
         double z = 0;
         double zi = 0;

@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="panes" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseMoved="#resolution" prefHeight="500.0" prefWidth="748.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.designprogram.HelloController">
+<AnchorPane fx:id="panes" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseMoved="#resolution" prefHeight="500.0" prefWidth="748.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.designprogram.HelloController">
     <children>
         <BorderPane layoutX="-1.0" prefHeight="506.0" prefWidth="750.0">
 
@@ -58,6 +58,16 @@
                                                 <CheckBox fx:id="quadrado" mnemonicParsing="false" />
                                             </graphic>
                                         </MenuItem>
+                              <MenuItem mnemonicParsing="false" text="Linha">
+                                 <graphic>
+                                    <CheckBox fx:id="line" mnemonicParsing="false" />
+                                 </graphic>
+                              </MenuItem>
+                              <MenuItem mnemonicParsing="false" text="Polígonos">
+                                 <graphic>
+                                    <CheckBox fx:id="poligono" mnemonicParsing="false" />
+                                 </graphic>
+                              </MenuItem>
                                     </items>
                                 </MenuButton>
                                 <VBox prefHeight="40.0" prefWidth="56.0">

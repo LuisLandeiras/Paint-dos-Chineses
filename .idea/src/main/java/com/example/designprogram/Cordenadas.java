@@ -9,6 +9,11 @@ public class Cordenadas {
         this.y = y;
     }
 
+    public Cordenadas() {
+        this.x = 0;
+        this.y = 0;
+    }
+
     public double getX() {
         return x;
     }
