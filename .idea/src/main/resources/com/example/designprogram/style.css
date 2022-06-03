@@ -1,0 +1,24 @@
+
+.menu-bar{
+    -fx-background-color: #000000;
+}
+
+.tool-bar{
+    -fx-background-color: #000000;
+}
+
+#box{
+    -fx-background-color: #000000;
+}
+
+#lb{
+    -fx-text-fill: white;
+}
+
+.menu .label{
+    -fx-text-fill: white;
+}
+
+#m{
+    -fx-text-fill: black;
+}

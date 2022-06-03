@@ -72,6 +72,7 @@ public class HelloController {
         Rectangle r = new Rectangle();
         GraphicsContext coords = canvas.getGraphicsContext2D();
         canvas.setOnMouseDragged(e -> {
+            //Usado para mover o fractal
             if (mandelbrot.isSelected()) {
                 Cordenadas cordenadas = new Cordenadas(e.getX(), e.getY());
                 MoveFractal.add(cordenadas);
@@ -153,7 +154,7 @@ public class HelloController {
     @FXML
     public void tamanhofig() {
         tamfiguras.setMax(1000);
-        tamfiguras.setMin(1);
+        tamfiguras.setMin(0);
         double size = Double.parseDouble(String.valueOf(tamfiguras.getValue()));
         int resultado = (int) size;
 
@@ -170,7 +171,7 @@ public class HelloController {
     @FXML
     public void grossurafig(){
         grofiguras.setMax(100);
-        grofiguras.setMin(1);
+        grofiguras.setMin(0);
         double size = Double.parseDouble(String.valueOf(grofiguras.getValue()));
         int resultado2 = (int) size;
         text1.setText(String.valueOf(resultado2));
@@ -294,10 +295,10 @@ public class HelloController {
                 double c1 = Math.min(255 * 2 * t1, 255);
                 double c2 = Math.max(255 * (2 * t1 - 1), 0);
 
-                if (convergenceValue != convergenceSteps) {
-                    canvas.getGraphicsContext2D().setFill(Color.color(c2 / 255, c1 / 255, c2 / 255));
-                } else {
-                    canvas.getGraphicsContext2D().setFill(Color.PURPLE); // Convergence Color
+                if (convergenceValue != convergenceSteps){
+                    canvas.getGraphicsContext2D().setFill(Color.color(c2 / 3000, c1 / 3000, c2 / 3000));
+                } else{
+                    canvas.getGraphicsContext2D().setFill(Color.YELLOW); // Convergence Color
                 }
                 canvas.getGraphicsContext2D().fillRect(xR, yR, 1, 1);
             }
