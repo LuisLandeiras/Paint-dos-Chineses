@@ -2,7 +2,6 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.canvas.Canvas?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ColorPicker?>
 <?import javafx.scene.control.Label?>
@@ -12,43 +11,100 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="panes" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseMoved="#resolution" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.designprogram.HelloController">
+<AnchorPane fx:id="panes" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseMoved="#resolution" prefHeight="500.0" prefWidth="748.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.designprogram.HelloController">
     <children>
-        <BorderPane layoutX="-1.0">
+        <BorderPane layoutX="-1.0" prefHeight="506.0" prefWidth="750.0">
 
-            <top>
-                <VBox prefHeight="68.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+                              <top>
+                <VBox prefHeight="91.0" prefWidth="773.0" style="-fx-view-order: 1;" BorderPane.alignment="CENTER">
                     <children>
-                        <MenuBar>
+                        <MenuBar style="-fx-view-order: 0;" stylesheets="@style.css">
                             <menus>
-                                <Menu mnemonicParsing="false" text="File">
+                                <Menu mnemonicParsing="false" text="Ficheiros">
                                     <items>
-                                        <MenuItem mnemonicParsing="false" onAction="#ImportImage" text="Import" />
-                                        <MenuItem mnemonicParsing="false" onAction="#save" text="Save" />
-                                        <MenuItem mnemonicParsing="false" onAction="#clear" text="Clear" />
-                                    </items>
-                                </Menu>
-                                <Menu mnemonicParsing="false" text="Edit">
-                                    <items>
-                                        <MenuItem mnemonicParsing="false" text="Delete" />
+                                        <MenuItem mnemonicParsing="false" onAction="#ImportImage" text="Importar Imagem" />
+                                        <MenuItem mnemonicParsing="false" onAction="#save" text="Salvar Trabalho" />
+                                        <MenuItem mnemonicParsing="false" onAction="#clear" text="Limpar Tela" />
                                     </items>
                                 </Menu>
                             </menus>
                         </MenuBar>
-                        <ToolBar prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #c549f2;">
+                        <ToolBar prefHeight="66.0" prefWidth="766.0" style="-fx-view-order: 0;" stylesheets="@style.css">
                             <items>
                                 <Spinner fx:id="pincel" onMouseEntered="#tamanho" prefHeight="26.0" prefWidth="78.0" />
                                 <ColorPicker fx:id="colorPicker" onAction="#initialize" prefHeight="26.0" prefWidth="100.0" />
-                                <ToggleButton fx:id="pencil" mnemonicParsing="false" onAction="#initialize" text="Pincel" />
                                 <ToggleButton fx:id="eraser" mnemonicParsing="false" onAction="#initialize" prefHeight="26.0" prefWidth="65.0" text="Borracha" />
-                                <CheckBox fx:id="bucket" mnemonicParsing="false" text="Balde" />
+                              <MenuButton mnemonicParsing="false" text="Figuras">
+                                  <items>
+                                      <MenuItem mnemonicParsing="false" text="Triângulo">
+                                          <graphic>
+                                              <CheckBox fx:id="triangulo" mnemonicParsing="false" />
+                                          </graphic>
+                                      </MenuItem>
+                                      <MenuItem mnemonicParsing="false" text="Circulo">
+                                          <graphic>
+                                              <CheckBox fx:id="circulo" mnemonicParsing="false" />
+                                          </graphic>
+                                      </MenuItem>
+                                      <MenuItem mnemonicParsing="false" text="Quadrado">
+                                          <graphic>
+                                              <CheckBox fx:id="quadrado" mnemonicParsing="false" />
+                                          </graphic>
+                                      </MenuItem>
+                                  </items>
+                              </MenuButton>
+                              <VBox prefHeight="40.0" prefWidth="56.0">
+                                  <children>
+                                      <Label id="lb" stylesheets="@style.css" text="Grossura:">
+                                 <VBox.margin>
+                                    <Insets top="10.0" />
+                                 </VBox.margin>
+                              </Label>
+                                      <Label id="lb" prefHeight="17.0" prefWidth="60.0" stylesheets="@style.css" text="Tamanho:" />
+                                  </children>
+                              </VBox>
+                              <VBox prefHeight="56.0" prefWidth="140.0" stylesheets="@style.css">
+                                  <children>
+                                      <Slider fx:id="grofiguras" onMouseDragged="#grossurafig">
+                                          <padding>
+                                              <Insets top="2.0" />
+                                          </padding>
+                                 <VBox.margin>
+                                    <Insets top="10.0" />
+                                 </VBox.margin>
+                                      </Slider>
+                                      <Slider fx:id="tamfiguras" onMouseDragged="#tamanhofig" prefHeight="14.0" prefWidth="200.0">
+                                          <padding>
+                                              <Insets top="5.0" />
+                                          </padding>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                                      </Slider>
+                                  </children>
+                              </VBox>
+                              <VBox prefHeight="41.0" prefWidth="70.0" stylesheets="@style.css">
+                                  <children>
+                              <TextField fx:id="text1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#grossuratext" prefHeight="20.0" prefWidth="50.0">
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" right="5.0" top="6.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <TextField fx:id="text" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#tamanhotext" prefHeight="20.0" prefWidth="50.0">
+                                 <VBox.margin>
+                                    <Insets right="5.0" />
+                                 </VBox.margin>
+                              </TextField>
+                                  </children>
+                              </VBox>
+                        <CheckBox fx:id="mandelbrot" mnemonicParsing="false" onAction="#mandelbrot" text="MandelBrot" textFill="WHITE" />
                             </items>
                             <VBox.margin>
                                 <Insets />
@@ -57,68 +113,13 @@
                     </children>
                 </VBox>
             </top>
-            <center>
-                <Canvas fx:id="canvas" height="331.0" onScroll="#zoom" width="601.0" BorderPane.alignment="CENTER" />
-            </center>
-            <bottom>
-                <HBox alignment="CENTER_LEFT" prefHeight="41.0" prefWidth="601.0" style="-fx-background-color: #c549f2;" BorderPane.alignment="TOP_CENTER">
-                    <children>
-                        <MenuButton mnemonicParsing="false" text="Figuras">
-                            <items>
-                                <MenuItem mnemonicParsing="false" text="Triângulo">
-                                    <graphic>
-                                        <CheckBox fx:id="triangulo" mnemonicParsing="false" />
-                                    </graphic>
-                                </MenuItem>
-                                <MenuItem mnemonicParsing="false" text="Circulo">
-                                    <graphic>
-                                        <CheckBox fx:id="circulo" mnemonicParsing="false" />
-                                    </graphic>
-                                </MenuItem>
-                                <MenuItem mnemonicParsing="false" text="Quadrado">
-                                    <graphic>
-                                        <CheckBox fx:id="quadrado" mnemonicParsing="false" />
-                                    </graphic>
-                                </MenuItem>
-                            </items>
-                            <HBox.margin>
-                                <Insets left="10.0" right="15.0" />
-                            </HBox.margin>
-                        </MenuButton>
-                        <VBox prefHeight="40.0" prefWidth="56.0">
-                            <children>
-                                <Label text="Grossura:" />
-                                <Label prefHeight="17.0" prefWidth="60.0" text="Tamanho:" />
-                            </children>
-                        </VBox>
-                        <VBox prefHeight="200.0" prefWidth="100.0">
-                            <children>
-                                <Slider fx:id="grofiguras" onMouseDragged="#grossurafig">
-                                    <padding>
-                                        <Insets top="2.0" />
-                                    </padding>
-                                </Slider>
-                                <Slider fx:id="tamfiguras" onMouseDragged="#tamanhofig" prefHeight="14.0" prefWidth="200.0">
-                                    <padding>
-                                        <Insets top="5.0" />
-                                    </padding>
-                                </Slider>
-                            </children>
-                        </VBox>
-                        <VBox prefHeight="41.0" prefWidth="70.0">
-                            <children>
-                                <Label fx:id="label2" text="______">
-                                    <VBox.margin>
-                                        <Insets />
-                                    </VBox.margin>
-                                </Label>
-                                <Label fx:id="label" text="______" />
-                            </children>
-                        </VBox>
-                  <Button mnemonicParsing="false" onAction="#mandelbrot" text="Mandelbrot" />
-                    </children>
-                </HBox>
-            </bottom>
+         <center>
+            <AnchorPane fx:id="pane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Canvas fx:id="canvas" height="409.0" layoutX="1.0" layoutY="3.0" onScroll="#zoom" style="-fx-view-order: 0;" width="748.0" />
+               </children>
+            </AnchorPane>
+         </center>
         </BorderPane>
     </children>
 </AnchorPane>
