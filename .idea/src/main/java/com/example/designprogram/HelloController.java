@@ -71,6 +71,8 @@ public class HelloController {
                     circulo.setSelected(false);
                     triangulo.setSelected(false);
                     line.setSelected(false);
+                    pincel1.setSelected(false);
+                    pincel2.setSelected(false);
                 } else if (!triangulo.isSelected() & !quadrado.isSelected() & !circulo.isSelected()) {
                     if(pincel1.isSelected()) {
                         coords.setFill(colorPicker.getValue());
@@ -120,7 +122,6 @@ public class HelloController {
                     coords.strokeRect(x, y, size, size);
                 }
                 if (triangulo.isSelected()) {
-                    //triangulo retangulo
                     double[] xPoints = {x, x + size, x - size};
                     double[] yPoints = {y, y + size, y + size};
                     coords.setStroke(colorPicker.getValue());
@@ -304,8 +305,10 @@ public class HelloController {
     //Método responsável por limpar o canvas
     @FXML
     public void clear() {
-        canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         pane.getChildren().remove(image);
+        canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        canvas.setScaleX(1);
+        canvas.setScaleY(1);
     }
 
     //Método responsável por redimensionar o programa
