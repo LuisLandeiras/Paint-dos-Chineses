@@ -10,8 +10,6 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -31,51 +29,31 @@ public class HelloController {
     @FXML
     private Slider tamfiguras, grofiguras;
     @FXML
-    private CheckBox triangulo, quadrado, circulo, mandelbrot;
+    private CheckBox triangulo, quadrado, circulo, line, mandelbrot, pincel1, pincel2;
     @FXML
     private TextField text1, text;
     @FXML
-    private ImageView image = new ImageView();
-    @FXML
     private AnchorPane panes, pane;
+    @FXML
+    private ImageView image = new ImageView();
     private double reMin = -2, reMax = 1 , imMin = -1.2, imMax = 1.2;
-
-    ArrayList<Cordenadas> MoveFractal = new ArrayList<>();
-    ArrayList <Cordenadas> ImageMove = new ArrayList<>(); //Array das coordenadas dos pontos para mover a Imagem
-
-    private double distpontos (Cordenadas a, Cordenadas b){
-        double x = Math.pow((a.getX() - b.getX()), 2);
-        double y = Math.pow((a.getY() - b.getY()), 2);
-        return Math.sqrt(x + y);
-    }
-
-    /*private double modulo (double x){
-        if (x > 0){
-            return x;
-        } else {
-            return -x;
-        }
-    }
-
-    private int modulo2(double x, double y) {
-        if(x - y > 0){
-            return (int) (x - y);
-        }   else {
-            return (int) (y - x);
-        }
-    }*/
+    ArrayList<Coordenadas> MoveFractal = new ArrayList<>(); //Array das coordenadas do fractal
+    ArrayList <Coordenadas> ImageMove = new ArrayList<>(); //Array das coordenadas dos pontos para mover a Imagem
+    int click = 0;
 
     //Método responsável pelas alterações do canvas
     @FXML
     public void initialize() {
-        Circle c = new Circle();
-        Rectangle r = new Rectangle();
+        pincel1.setSelected(true);
+        Coordenadas c1 = new Coordenadas();
+        Coordenadas c2 = new Coordenadas();
+        pincel.setEditable(true);
+        pincel.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 1));
         GraphicsContext coords = canvas.getGraphicsContext2D();
         canvas.setOnMouseDragged(e -> {
-            //Usado para mover o fractal
             if (mandelbrot.isSelected()) {
-                Cordenadas cordenadas = new Cordenadas(e.getX(), e.getY());
-                MoveFractal.add(cordenadas);
+                Coordenadas coordenadas = new Coordenadas(e.getX(), e.getY());
+                MoveFractal.add(coordenadas);
                 if (MoveFractal.size() > 1) {
                     imMin = imMin + ((MoveFractal.get(0).getY() - MoveFractal.get(MoveFractal.size() - 1).getY()) / 20000);
                     imMax = imMax + ((MoveFractal.get(0).getY() - MoveFractal.get(MoveFractal.size() - 1).getY()) / 20000);
@@ -87,33 +65,43 @@ public class HelloController {
                 double size = Double.parseDouble(String.valueOf(pincel.getValue()));
                 double x = e.getX() - size / 2;
                 double y = e.getY() - size / 2;
-                if (eraser.isSelected()) {
+                if (eraser.isSelected()) { //Desativa tudo para poder apagar sem bugs
                     coords.clearRect(x, y, size, size);
                     quadrado.setSelected(false);
                     circulo.setSelected(false);
                     triangulo.setSelected(false);
-                } else if(triangulo.isSelected() == false & quadrado.isSelected() == false & circulo.isSelected() == false){
-                    coords.setFill(colorPicker.getValue());
-                    coords.fillRect(x, y, size, size);
+                    line.setSelected(false);
+                    pincel1.setSelected(false);
+                    pincel2.setSelected(false);
+                } else if (!triangulo.isSelected() & !quadrado.isSelected() & !circulo.isSelected()) {
+                    if(pincel1.isSelected()) {
+                        coords.setFill(colorPicker.getValue());
+                        coords.fillRect(x, y, size, size);
+                    }
+                    if(pincel2.isSelected()) {
+                        coords.setFill(colorPicker.getValue());
+                        coords.fillOval(x, y, size, size);
+                    }
                 }
             }
         });
 
+        //Evento usado para limpar a arraylist de coordenadas do fractal
         canvas.setOnMouseMoved(event -> {
             MoveFractal.clear();
         });
 
-        //Método responsável pelo movimento da imagem
+        //Evento responsável pelo movimento da imagem
         image.setOnMouseDragged(e -> {
             double size = tamfiguras.getValue();
             double x = e.getX() - size / 2;
             double y = e.getY() - size / 2;
-            ImageMove.add(new Cordenadas(x, y));
+            ImageMove.add(new Coordenadas(x, y));
             image.setTranslateX(image.getTranslateX() - (ImageMove.get(0).getX() - ImageMove.get(ImageMove.size() - 1).getX()) / 2);
             image.setTranslateY(image.getTranslateY() - (ImageMove.get(0).getY() - ImageMove.get(ImageMove.size() - 1).getY()) / 2);
         });
 
-        //Responsável por limpar o arrray de movimento da imagem
+        //Evento responsável por limpar o array de movimento da imagem
         image.setOnMouseMoved(event -> {
             ImageMove.clear();
         });
@@ -126,31 +114,124 @@ public class HelloController {
                 double y = e.getY() - size / 2;
                 coords.setLineWidth(grossura);
                 if (circulo.isSelected()) {
-                    c.setCenterX(x + size / 2);
-                    c.setCenterY(y + size / 2);
-                    c.setRadius(size / 2);
                     coords.setStroke(colorPicker.getValue());
                     coords.strokeOval(x, y, size, size);
                 }
                 if (quadrado.isSelected()) {
-                    r.setX(x);
-                    r.setY(y);
-                    r.setHeight(size);
-                    r.setHeight(size);
                     coords.setStroke(colorPicker.getValue());
                     coords.strokeRect(x, y, size, size);
                 }
                 if (triangulo.isSelected()) {
-                    //triangulo retangulo
                     double[] xPoints = {x, x + size, x - size};
                     double[] yPoints = {y, y + size, y + size};
                     coords.setStroke(colorPicker.getValue());
                     coords.strokePolygon(xPoints, yPoints, 3);
                 }
+            }else if (e.getButton() == MouseButton.SECONDARY) {
+                double grossura = Double.parseDouble(String.valueOf(grofiguras.getValue()));
+                coords.setLineWidth(grossura);
+
+                if (circulo.isSelected()){
+                    click++;
+                    if (click == 1) {
+                        c1.setX(e.getX());
+                        c1.setY(e.getY());
+                    } else if(click == 2){
+                        double x1 = e.getX();
+                        double y1 = e.getY();
+                        coords.setStroke(colorPicker.getValue());
+                        coords.strokeOval(menor(c1.getX(), x1), menor(c1.getY(), y1), distanciapontos(c1, new Coordenadas(x1, y1)).getX(), distanciapontos(c1, new Coordenadas(x1, y1)).getY());
+                        click = 0;
+                    }
+                }
+                if (triangulo.isSelected()){
+                    click++;
+                    if (click == 1) {
+                        c1.setX(e.getX());
+                        c1.setY(e.getY());
+                    } else if(click == 2){
+                        c2.setX(e.getX());
+                        c2.setY(e.getY());
+                    } else{
+                        double x = e.getX();
+                        double y = e.getY();
+                        coords .setStroke(colorPicker.getValue());
+                        coords.strokePolygon(new double[]{c1.getX(), c2.getX(), x}, new double[]{c1.getY(), c2.getY(), y}, 3);
+                        click = 0;
+                    }
+                }
+                if (quadrado.isSelected()){
+                    click++;
+                    if (click == 1) {
+                        c1.setX(e.getX());
+                        c1.setY(e.getY());
+                    } else {
+                        double x1 = e.getX();
+                        double y1 = e.getY();
+                        coords.setStroke(colorPicker.getValue());
+                        coords.strokeRect( menor(c1.getX(), x1), menor(c1.getY(), y1), distanciapontos(c1, new Coordenadas(x1, y1)).getX(), distanciapontos(c1, new Coordenadas(x1, y1)).getY());
+                        click = 0;
+                    }
+                }
+                if(line.isSelected()){
+                    click++;
+                    if (click == 1) {
+                        c1.setX(e.getX());
+                        c1.setY(e.getY());
+                    } else {
+                        double x1 = e.getX();
+                        double y1 = e.getY();
+                        coords.setStroke(colorPicker.getValue());
+                        coords.strokeLine(c1.getX(), c1.getY(), x1, y1);
+                        click = 0;
+                    }
+                }
             }
         });
     }
-    //Método responsavel por mostrar o tamanho das figuras
+
+    //Métodos usados para desativar funcinalidade de desenho quando uma estiver a ser usada
+    @FXML
+    private void qtrue() {
+        circulo.setSelected(false);
+        triangulo.setSelected(false);
+        line.setSelected(false);
+    }
+    @FXML
+    private void ctrue() {
+        quadrado.setSelected(false);
+        triangulo.setSelected(false);
+        line.setSelected(false);
+    }
+    @FXML
+    private void ttrue() {
+        quadrado.setSelected(false);
+        circulo.setSelected(false);
+        line.setSelected(false);
+    }
+    @FXML
+    private void ltrue() {
+        quadrado.setSelected(false);
+        circulo.setSelected(false);
+        triangulo.setSelected(false);
+    }
+    @FXML
+    private void pincel1true(){
+        pincel2.setSelected(false);
+        quadrado.setSelected(false);
+        circulo.setSelected(false);
+        triangulo.setSelected(false);
+    }
+    @FXML
+    private void pincel2true(){
+        pincel1.setSelected(false);
+        quadrado.setSelected(false);
+        circulo.setSelected(false);
+        triangulo.setSelected(false);
+    }
+    //---------------------------------------------------------------------------------------------------------------------
+
+    //Métodos responsáveis por aumentar o tamanho das figuras e do pincel/borracha
     @FXML
     public void tamanhofig() {
         tamfiguras.setMax(1000);
@@ -161,13 +242,10 @@ public class HelloController {
         text.setText(String.valueOf(resultado));
 
     }
-
     @FXML
     public void tamanhotext(){
         tamfiguras.setValue(Integer.parseInt(String.valueOf(text.getText())));
     }
-
-    //Método responsavel por mostrar a grossura das figuras
     @FXML
     public void grossurafig(){
         grofiguras.setMax(100);
@@ -176,19 +254,15 @@ public class HelloController {
         int resultado2 = (int) size;
         text1.setText(String.valueOf(resultado2));
     }
-
     @FXML
     public void grossuratext(){
         grofiguras.setValue(Integer.parseInt(String.valueOf(text1.getText())));
     }
+    //---------------------------------------------------------------------------------------------------------------------
+
+    //Métodos responáveis por importar imagens e salvar o canvas como imagem
     @FXML
-    public void tamanho(){
-        pincel.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100));
-    }
-
-
-    //Devolve o caminho do ficheiro
-    private String FilePath(){
+    private void ImportImage(){
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Abrir Ficheiro");
         fileChooser.getExtensionFilters().addAll(
@@ -197,20 +271,12 @@ public class HelloController {
                 new FileChooser.ExtensionFilter("JPG", "*.jpg")
         );
         File file = fileChooser.showOpenDialog(pane.getScene().getWindow());
-        return file.getAbsolutePath();
-    }
-
-    //Importa a imagem
-    @FXML
-    private void ImportImage(){
-        image = new ImageView(FilePath());
+        image = new ImageView(file.getAbsolutePath());
         image.setLayoutY(canvas.getLayoutY());
         image.setLayoutX(canvas.getLayoutX());
         pane.getChildren().add(image);
         initialize();
     }
-
-    //Método responsável por salvar o canvas
     @FXML
     public void save() {
         Stage stage = new Stage();
@@ -234,14 +300,18 @@ public class HelloController {
             }
         }
     }
+    //---------------------------------------------------------------------------------------------------------------------
 
     //Método responsável por limpar o canvas
     @FXML
     public void clear() {
-        canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         pane.getChildren().remove(image);
+        canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        canvas.setScaleX(1);
+        canvas.setScaleY(1);
     }
 
+    //Método responsável por redimensionar o programa
     @FXML
     private void resolution (){
         panes.setOnMouseMoved(e -> {
@@ -253,10 +323,10 @@ public class HelloController {
         });
     }
 
-    //Método responsável por dar zoom no canvas
+    //Método responsável por dar zoom no canvas e zoom no fractal
     @FXML
     public void zoom() {
-        if(mandelbrot.isSelected() == false){
+        if(!mandelbrot.isSelected()){
             canvas.setOnScroll(e -> {
                 double scaleFactor = 1.05;
                 if (e.getDeltaY() < 0) {
@@ -284,6 +354,7 @@ public class HelloController {
         }
     }
 
+    //Método responsável por desenhar o fractal
     @FXML
     private void mandelbrot(){
         double precision = Math.max((reMax - reMin) / canvas.getWidth(), (imMax - imMin) / canvas.getHeight());
@@ -291,19 +362,21 @@ public class HelloController {
         for (double c = reMin, xR = 0; xR < canvas.getWidth(); c = c + precision, xR++) {
             for (double ci = imMin, yR = 0; yR < canvas.getHeight(); ci = ci + precision, yR++) {
                 double convergenceValue = checkConvergence(ci, c, convergenceSteps);
-                double t1 = (double) convergenceValue / convergenceSteps;
+                double t1 = convergenceValue / convergenceSteps;
                 double c1 = Math.min(255 * 2 * t1, 255);
                 double c2 = Math.max(255 * (2 * t1 - 1), 0);
 
                 if (convergenceValue != convergenceSteps){
-                    canvas.getGraphicsContext2D().setFill(Color.color(c2 / 3000, c1 / 3000, c2 / 3000));
+                    canvas.getGraphicsContext2D().setFill(Color.color(c2 / 255, c1 / 255, c2 / 255));
                 } else{
-                    canvas.getGraphicsContext2D().setFill(Color.YELLOW); // Convergence Color
+                    canvas.getGraphicsContext2D().setFill(Color.BLACK); // Convergence Color
                 }
                 canvas.getGraphicsContext2D().fillRect(xR, yR, 1, 1);
             }
         }
     }
+
+    //Método responsável por calcular a formula de mandelbrot
     private int checkConvergence(double ci, double c, int convergenceSteps) {
         double z = 0;
         double zi = 0;
@@ -318,5 +391,27 @@ public class HelloController {
             }
         }
         return convergenceSteps;
+    }
+
+    //Métodos de suporte para as coordenadas
+    private Coordenadas distanciapontos(Coordenadas a, Coordenadas b){ //Calcula a distância entre dois pontos
+        Coordenadas c = new Coordenadas();
+        c.setX(modulo(a.getX() - b.getX()));
+        c.setY(modulo(a.getY() - b.getY()));
+        return c;
+    }
+    private double modulo(double x){
+        if (x > 0){
+            return x;
+        } else {
+            return -x;
+        }
+    }
+    private double menor(double a, double b){
+        if (a < b){
+            return a;
+        } else {
+            return b;
+        }
     }
 }
